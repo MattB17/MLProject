@@ -131,6 +131,7 @@ dmypy.json
 # Project Folders
 data/
 output_data/
+results/
 
 # MAC files
 .DS_Store
