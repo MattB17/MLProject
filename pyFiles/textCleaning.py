@@ -138,10 +138,10 @@ def preprocess_all_book_text(data_df, id_col, text_col, exclude_text, ps):
         with the processed text.
 
     """
-    book_df = train_df[[id_col, text_col]]
+    book_df = data_df[[id_col, text_col]]
     book_df = book_df.drop_duplicates(subset=[id_col])
     book_df['cleaned_text'] = book_df[text_col].apply(lambda x: process_book_text(x, exclude_text, ps))
-    final_df = pd.merge(train_df, book_df[[id_col, "cleaned_text"]], how="inner", on=[id_col])
+    final_df = pd.merge(data_df, book_df[[id_col, "cleaned_text"]], how="inner", on=[id_col])
     return final_df
 
 

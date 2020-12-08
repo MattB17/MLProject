@@ -11,14 +11,21 @@ np.random.seed(42)
 # Load Data
 ######################################################
 
+print("Loading data")
+
 OUTPUT_DATA_DIR = "./output_data/"
 
 train_df_processed = pd.read_csv(OUTPUT_DATA_DIR+"text_processed_training.csv").sample(frac=0.25)
 val_df_processed = pd.read_csv(OUTPUT_DATA_DIR+"text_processed_validation.csv")
 
+train_df_processed['cleaned_text'] = train_df_processed['cleaned_text'].apply(lambda x: "" if pd.isnull(x) else x)
+val_df_processed['cleaned_text'] = val_df_processed['cleaned_text'].apply(lambda x: "" if pd.isnull(x) else x)
+
 ######################################################
 # Pre-TF-IDF Processing
 ######################################################
+
+print("TF-IDF Pre Processing")
 
 columns_to_keep = ['text_reviews_count', 'is_ebook', 'average_rating', 'num_pages',
                    'publication_year', 'ratings_count', 'is_translated', 'is_in_series',
@@ -68,8 +75,12 @@ X_val_reg = min_max_scaler.transform(X_val_reg)
 # Prototyping the Textual Model
 ######################################################
 
+print("Building TF-IDF Model")
+
 book_df = train_df_processed[['book_id', 'cleaned_text']]
 book_df = book_df.drop_duplicates(subset=['book_id'])
+
+book_df['cleaned_text'] = book_df['cleaned_text'].apply(lambda x: "" if pd.isnull(x) else x)
 
 from sklearn.feature_extraction.text import TfidfVectorizer
 
@@ -87,6 +98,8 @@ X_train_tfidf_reg = sp.hstack((train_tfidf, X_train_reg_sp), format='csr')
 
 X_val_reg_sp = sp.csr_matrix(X_val_reg)
 X_val_tfidf_reg = sp.hstack((val_tfidf, X_val_reg_sp), format='csr')
+
+print("Running XGBoost")
 
 from xgboost import XGBClassifier
 from sklearn.metrics import roc_auc_score
@@ -122,6 +135,8 @@ for learning_rate in learning_rates:
             print()
 
 
+print("Saving Results")
+
 RESULTS_DIR = './results/'
 
 if not os.path.exists(RESULTS_DIR):
@@ -134,3 +149,5 @@ xgb_tfidf = pd.DataFrame({'learning_rate': lrs,
                           'training_MSE': train_MSEs,
                           'validation_MSE': val_MSEs})
 xgb_tfidf.to_csv(RESULTS_DIR+"xgbTFIDF.csv", index=False)
+
+print("Done")
