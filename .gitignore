@@ -132,6 +132,7 @@ dmypy.json
 data/
 output_data/
 results/
+pyFiles/
 
 # MAC files
 .DS_Store
