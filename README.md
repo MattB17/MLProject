@@ -41,6 +41,9 @@ These notebooks contain the code used to combine the baseline models with the `s
 * `MetaChainRecStage.ipynb` builds these models using the `s` variables from training chainRec using stagewise sampling.
 * `MetaBprMF.ipynb` builds these models using the `s` variables from training bprMF.
 
+##### 5) `FinalModelsEvaluation.ipynb`
+In this notebook we run our final candidate models on the combination of testing and validation data. These models are then evaluated on the test set.
+
 ##### Other Code
 * `pyFiles` contains python files used to run cross validation in order to choose hyperparameters to train final models.
 * `mappings` contains a collection of mapping files used to map data between our models and the chainRec models.
